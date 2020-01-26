@@ -279,7 +279,7 @@ see
 ;;;###autoload
 (define-minor-mode virtual-auto-fill-mode
   "Visually wrap lines between wrap prefix and `fill-column'."
-  :lighter " TextWrap"
+  :lighter " VirtualFill"
   (if virtual-auto-fill-mode
       (progn
         (virtual-auto-fill--save-state)
