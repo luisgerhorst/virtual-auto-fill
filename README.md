@@ -6,13 +6,13 @@ Specifically, `adaptive-wrap-prefix-mode`, `visual-fill-column-mode` and `visual
 
 ## Screenshots
 
-### Without virtual-auto-fill
+Without `virtual-auto-fill-mode`, only a small portion of the text file is visible:
 
-![text does not wrap](./screenshot-default.png "A plain text file viewed without virtual-auto-fill-mode")
+![lines are truncated](./screenshot-default.png "A plain text file viewed without virtual-auto-fill-mode")
 
-### With virtual-auto-fill
+`virtual-auto-fill` displays the buffer as if you had filled it, but without actually modifying it:
 
-![all text visible](./screenshot-virtual-auto-fill.png "A plain text file viewed with virtual-auto-fill-mode enabled")
+![text wraps at 80 characters, continuation lines in bullet list are indented](./screenshot-virtual-auto-fill.png "A plain text file viewed with virtual-auto-fill-mode enabled")
 
 ## Installation
 
