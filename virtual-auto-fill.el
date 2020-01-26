@@ -276,6 +276,7 @@ https://github.com/joostkremers/visual-fill-column/issues/1. Also
 see
 `virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1'.")
 
+;;;###autoload
 (define-minor-mode virtual-auto-fill-mode
   "Visually wrap lines between wrap prefix and `fill-column'."
   :lighter " TextWrap"
