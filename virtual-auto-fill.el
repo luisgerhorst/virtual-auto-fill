@@ -8,7 +8,7 @@
 ;; Keywords: minor
 ;; Created: Sun 26. Jan 2020
 ;; Version: 0.1
-;; Package-Requires: ((emacs "25.2"), (adaptive-wrap "0.7"), (visual-fill-column "1.9"), (diminish "0.45"))
+;; Package-Requires: ((emacs "25.2") (adaptive-wrap "0.7") (visual-fill-column "1.9") (diminish "0.45"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -302,3 +302,5 @@ see
     (kill-local-variable 'virtual-auto-fill-fill-paragraph-require-confirmation)))
 
 (provide 'virtual-auto-fill)
+
+;;; virtual-auto-fill.el ends here
