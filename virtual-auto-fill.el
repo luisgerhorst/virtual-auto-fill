@@ -8,7 +8,7 @@
 ;; Keywords: minor
 ;; Created: Sun 26. Jan 2020
 ;; Version: 0.1
-;; Package-Requires: ((emacs "25.2"), (adaptive-wrap "0.7"), (visual-fill-column "1.9"), (diminish "0.45"))
+;; Package-Requires: ((emacs "25.2") (adaptive-wrap "0.7") (visual-fill-column "1.9") (diminish "0.45"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -277,9 +277,10 @@ https://github.com/joostkremers/visual-fill-column/issues/1. Also
 see
 `virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1'.")
 
+;;;###autoload
 (define-minor-mode virtual-auto-fill-mode
   "Visually wrap lines between wrap prefix and `fill-column'."
-  :lighter " TextWrap"
+  :lighter " VirtualFill"
   (if virtual-auto-fill-mode
       (progn
         (virtual-auto-fill--save-state)
@@ -302,3 +303,5 @@ see
     (kill-local-variable 'virtual-auto-fill-fill-paragraph-require-confirmation)))
 
 (provide 'virtual-auto-fill)
+
+;;; virtual-auto-fill.el ends here
