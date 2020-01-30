@@ -27,12 +27,12 @@
 
 ;;; Commentary:
 ;;
-;; `virtual-auto-fill-mode' displays unfilled text in a readable way.  It wraps
+;; Virtual Auto Fill mode displays unfilled text in a readable way.  It wraps
 ;; the text as if you had inserted line breaks (e.g. using `fill-paragraph' or
 ;; `auto-fill-mode') without actually modifying the underlying buffer.  It also
 ;; indents paragraphs in bullet lists properly.
 ;;
-;; Specifically, `adaptive-wrap-prefix-mode', `visual-fill-column-mode' and
+;; Specifically, `adaptive-wrap-prefix-mode', Visual Fill Column mode and
 ;; `visual-line-mode' are used to wrap paragraphs and bullet lists between the
 ;; wrap prefix and the fill column.
 
@@ -64,7 +64,7 @@ perform the requested window recentering or scrolling and ask
 again.
 
 When `use-dialog-box' is t (the default), this function can pop
-up a dialog window to collect the user input. That functionality
+up a dialog window to collect the user input.  That functionality
 requires `display-popup-menus-p' to return t. Otherwise, a text
 dialog will be used.
 
@@ -262,23 +262,32 @@ Confirmation is always skipped if
                  (?d (progn (virtual-auto-fill-mode -1)
                             (call-interactively #'fill-paragraph))))))))
 
-(defvar virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1 nil
-  "Enable `visual-fill-column-mode' in Emacs versions pre 26.1.
+(defvar virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1 nil
+  "Enable Visual Fill Column mode even if Emacs is too old.
 Emacs versions before 26.1 have a bug that can crash Emacs when
-`visual-fill-column-mode' is enabled (a mode employed by
-`virtual-auto-fill-mode').  For further information, see
-https://github.com/joostkremers/visual-fill-column/issues/1.
-Also see
-`virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1'.")
+Visual Fill Column mode is enabled (a mode employed by
+Virtual Auto Fill mode).  For further information, see:
 
-(defvar virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1 t
-  "Don't warn about the Emacs bug regarding `visual-fill-column-mode'.
+  https://github.com/joostkremers/visual-fill-column/issues/1
+
+By setting this to non-nil, you risk a crash when your Emacs
+version is too old.  To only disable the warning about the bug,
+set
+`virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1'.")
+
+(defvar virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1 nil
+  "Don't warn about the Emacs bug triggered by Visual Fill Column mode.
 Emacs versions before 26.1 have a bug that can crash Emacs when
-visual-fill-column-mode is enabled (a mode employed by
-`virtual-auto-fill-mode').  For further information, see
-https://github.com/joostkremers/visual-fill-column/issues/1. Also
-see
-`virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1'.")
+Visual Fill Column mode is enabled (a mode employed by Virtual
+Auto Fill mode).  For further information and workarounds, see:
+
+  https://github.com/joostkremers/visual-fill-column/issues/1
+
+Setting this to non-nil silences the warning issued when you are
+running an Emacs version smaller than 26.1, but still leaves
+Visual Fill Column mode disabled.  To enable Visual Fill Column
+mode even when your Emacs is deemed buggy, set
+`virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1'.")
 
 ;;;###autoload
 (define-minor-mode virtual-auto-fill-mode
@@ -291,9 +300,9 @@ see
         (diminish 'visual-line-mode)
         (adaptive-wrap-prefix-mode 1)
         (if (and (version< emacs-version "26.1")
-                 (not virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1))
-            (when virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1
-              (message "You are running an Emacs version < 26.1 which has a bug that can crash Emacs when Visual Fill Column mode is enabled (a mode employed by Virtual Auto Fill mode). This bug has been fixed starting with Emacs version 26.1. Visual Fill Column mode is left disabled for now. To enable it anyway, set `virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1' to t and retry. To disable this warning (but leave Virtual Auto Fill mode disabled), add set `virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1'. For further information, see https://github.com/joostkremers/visual-fill-column/issues/1"))
+                 (not virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1))
+            (when virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1
+              (message "You are running an Emacs version < 26.1 which has a bug that can crash Emacs when Visual Fill Column mode is enabled (that's a mode employed by Virtual Auto Fill mode). This bug has been fixed starting with Emacs version 26.1. Visual Fill Column mode is left disabled for now. To enable it anyway, set `virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1' to non-nil and retry. To disable this warning (but leave Virtual Auto Fill mode disabled), unset `virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1'. For further information, see https://github.com/joostkremers/visual-fill-column/issues/1"))
           (visual-fill-column-mode 1))
         (local-set-key [remap fill-paragraph]
                        #'virtual-auto-fill-fill-paragraph-after-confirmation)
