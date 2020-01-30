@@ -260,16 +260,16 @@ Confirmation is always skipped if
                             (call-interactively #'fill-paragraph))))))))
 
 (defvar virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1 nil
-  "Enable visual-fill-column-mode even if the Emacs version is lower than 26.1 and will likely crash.
+  "Enable `visual-fill-column-mode' in Emacs versions pre 26.1.
 Emacs versions before 26.1 have a bug that can crash Emacs when
-visual-fill-column-mode is enabled (a mode employed by
-virtual-auto-fill-mode).  For further information, see
+`visual-fill-column-mode' is enabled (a mode employed by
+`virtual-auto-fill-mode').  For further information, see
 https://github.com/joostkremers/visual-fill-column/issues/1.
 Also see
 `virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1'.")
 
-(defvar virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1 nil
-  "Don't issue a warning when an Emacs version lower than 26.1 prevents `visual-fill-column-mode' from being enabled.
+(defvar virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1 t
+  "Don't warn about the Emacs bug regarding `visual-fill-column-mode'.
 Emacs versions before 26.1 have a bug that can crash Emacs when
 visual-fill-column-mode is enabled (a mode employed by
 `virtual-auto-fill-mode').  For further information, see
