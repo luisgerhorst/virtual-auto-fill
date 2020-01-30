@@ -44,7 +44,8 @@
 
 (require 'rmc nil t)
 (unless (fboundp 'read-multiple-choice)
-  ;; Copied from rmc.el
+  ;; To support Emacs versions < 26.1, which added `read-multiple-choice', we
+  ;; include a copy of the function from rmc.el here.
   (defun read-multiple-choice (prompt choices)
     "Ask user a multiple choice question.
 PROMPT should be a string that will be displayed as the prompt.
