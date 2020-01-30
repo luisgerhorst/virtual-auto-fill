@@ -1,11 +1,11 @@
-;;; virtual-auto-fill.el --- readably display text without adding line breaks -*- lexical-binding: t; -*-
+;;; virtual-auto-fill.el --- Readably display text without adding line breaks -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
 ;; Author: Luis Gerhorst <virtual-auto-fill@luisgerhorst.de>
 ;; Maintainer: Luis Gerhorst <virtual-auto-fill@luisgerhorst.de>
 ;; URL: https://github.com/luisgerhorst/virtual-auto-fill
-;; Keywords: minor
+;; Keywords: convenience, mail, outlines, files, wp
 ;; Created: Sun 26. Jan 2020
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "25.2") (adaptive-wrap "0.7") (visual-fill-column "1.9") (diminish "0.45"))
@@ -42,12 +42,10 @@
 (require 'visual-fill-column)
 (require 'diminish)
 
-(require 'rmc nil t)
-(unless (fboundp 'read-multiple-choice)
-  ;; To support Emacs versions < 26.1, which added `read-multiple-choice', we
-  ;; include a copy of the function from rmc.el here.
-  (defun read-multiple-choice (prompt choices)
-    "Ask user a multiple choice question.
+;; To support Emacs versions < 26.1, which added `read-multiple-choice', we
+;; include a copy of the function from rmc.el here.
+(defun virtual-auto-fill--read-multiple-choice (prompt choices)
+  "Ask user a multiple choice question.
 PROMPT should be a string that will be displayed as the prompt.
 
 CHOICES is an alist where the first element in each entry is a
@@ -74,147 +72,152 @@ The return value is the matching entry from the CHOICES list.
 
 Usage example:
 
-\(read-multiple-choice \"Continue connecting?\"
+\(virtual-auto-fill--read-multiple-choice \"Continue connecting?\"
                       \\='((?a \"always\")
                         (?s \"session only\")
                         (?n \"no\")))"
-    (let* ((altered-names nil)
-           (full-prompt
-            (format
-             "%s (%s): "
-             prompt
-             (mapconcat
-              (lambda (elem)
-                (let* ((name (cadr elem))
-                       (pos (seq-position name (car elem)))
-                       (altered-name
-                        (cond
-                         ;; Not in the name string.
-                         ((not pos)
-                          (format "[%c] %s" (car elem) name))
-                         ;; The prompt character is in the name, so highlight
-                         ;; it on graphical terminals...
-                         ((display-supports-face-attributes-p
-                           '(:underline t) (window-frame))
-                          (setq name (copy-sequence name))
-                          (put-text-property pos (1+ pos)
-                                             'face 'read-multiple-choice-face
-                                             name)
-                          name)
-                         ;; And put it in [bracket] on non-graphical terminals.
-                         (t
-                          (concat
-                           (substring name 0 pos)
-                           "["
-                           (upcase (substring name pos (1+ pos)))
-                           "]"
-                           (substring name (1+ pos)))))))
-                  (push (cons (car elem) altered-name)
-                        altered-names)
-                  altered-name))
-              (append choices '((?? "?")))
-              ", ")))
-           tchar buf wrong-char answer)
-      (save-window-excursion
-        (save-excursion
-	      (while (not tchar)
-	        (message "%s%s"
-                     (if wrong-char
-                         "Invalid choice.  "
-                       "")
-                     full-prompt)
-            (setq tchar
-                  (if (and (display-popup-menus-p)
-                           last-input-event ; not during startup
-                           (listp last-nonmenu-event)
-                           use-dialog-box)
-                      (x-popup-dialog
-                       t
-                       (cons prompt
-                             (mapcar
-                              (lambda (elem)
-                                (cons (capitalize (cadr elem))
-                                      (car elem)))
-                              choices)))
-                    (condition-case nil
-                        (let ((cursor-in-echo-area t))
-                          (read-char))
-                      (error nil))))
-            (setq answer (lookup-key query-replace-map (vector tchar) t))
-            (setq tchar
-                  (cond
-                   ((eq answer 'recenter)
-                    (recenter) t)
-                   ((eq answer 'scroll-up)
-                    (ignore-errors (scroll-up-command)) t)
-                   ((eq answer 'scroll-down)
-                    (ignore-errors (scroll-down-command)) t)
-                   ((eq answer 'scroll-other-window)
-                    (ignore-errors (scroll-other-window)) t)
-                   ((eq answer 'scroll-other-window-down)
-                    (ignore-errors (scroll-other-window-down)) t)
-                   (t tchar)))
-            (when (eq tchar t)
-              (setq wrong-char nil
-                    tchar nil))
-            ;; The user has entered an invalid choice, so display the
-            ;; help messages.
-            (when (and (not (eq tchar nil))
-                       (not (assq tchar choices)))
-	          (setq wrong-char (not (memq tchar '(?? ?\C-h)))
-                    tchar nil)
-              (when wrong-char
-                (ding))
-              (with-help-window (setq buf (get-buffer-create
-                                           "*Multiple Choice Help*"))
-                (with-current-buffer buf
-                  (erase-buffer)
-                  (pop-to-buffer buf)
-                  (insert prompt "\n\n")
-                  (let* ((columns (/ (window-width) 25))
-                         (fill-column 21)
-                         (times 0)
-                         (start (point)))
-                    (dolist (elem choices)
-                      (goto-char start)
-                      (unless (zerop times)
-                        (if (zerop (mod times columns))
-                            ;; Go to the next "line".
-                            (goto-char (setq start (point-max)))
-                          ;; Add padding.
-                          (while (not (eobp))
-                            (end-of-line)
-                            (insert (make-string (max (- (* (mod times columns)
-                                                            (+ fill-column 4))
-                                                         (current-column))
-                                                      0)
-                                                 ?\s))
-                            (forward-line 1))))
-                      (setq times (1+ times))
-                      (let ((text
-                             (with-temp-buffer
-                               (insert (format
-                                        "%c: %s\n"
-                                        (car elem)
-                                        (cdr (assq (car elem) altered-names))))
-                               (fill-region (point-min) (point-max))
-                               (when (nth 2 elem)
-                                 (let ((start (point)))
-                                   (insert (nth 2 elem))
-                                   (unless (bolp)
-                                     (insert "\n"))
-                                   (fill-region start (point-max))))
-                               (buffer-string))))
-                        (goto-char start)
-                        (dolist (line (split-string text "\n"))
+  (let* ((altered-names nil)
+         (full-prompt
+          (format
+           "%s (%s): "
+           prompt
+           (mapconcat
+            (lambda (elem)
+              (let* ((name (cadr elem))
+                     (pos (seq-position name (car elem)))
+                     (altered-name
+                      (cond
+                       ;; Not in the name string.
+                       ((not pos)
+                        (format "[%c] %s" (car elem) name))
+                       ;; The prompt character is in the name, so highlight
+                       ;; it on graphical terminals...
+                       ((display-supports-face-attributes-p
+                         '(:underline t) (window-frame))
+                        (setq name (copy-sequence name))
+                        (put-text-property pos (1+ pos)
+                                           'face 'read-multiple-choice-face
+                                           name)
+                        name)
+                       ;; And put it in [bracket] on non-graphical terminals.
+                       (t
+                        (concat
+                         (substring name 0 pos)
+                         "["
+                         (upcase (substring name pos (1+ pos)))
+                         "]"
+                         (substring name (1+ pos)))))))
+                (push (cons (car elem) altered-name)
+                      altered-names)
+                altered-name))
+            (append choices '((?? "?")))
+            ", ")))
+         tchar buf wrong-char answer)
+    (save-window-excursion
+      (save-excursion
+        (while (not tchar)
+          (message "%s%s"
+                   (if wrong-char
+                       "Invalid choice.  "
+                     "")
+                   full-prompt)
+          (setq tchar
+                (if (and (display-popup-menus-p)
+                         last-input-event ; not during startup
+                         (listp last-nonmenu-event)
+                         use-dialog-box)
+                    (x-popup-dialog
+                     t
+                     (cons prompt
+                           (mapcar
+                            (lambda (elem)
+                              (cons (capitalize (cadr elem))
+                                    (car elem)))
+                            choices)))
+                  (condition-case nil
+                      (let ((cursor-in-echo-area t))
+                        (read-char))
+                    (error nil))))
+          (setq answer (lookup-key query-replace-map (vector tchar) t))
+          (setq tchar
+                (cond
+                 ((eq answer 'recenter)
+                  (recenter) t)
+                 ((eq answer 'scroll-up)
+                  (ignore-errors (scroll-up-command)) t)
+                 ((eq answer 'scroll-down)
+                  (ignore-errors (scroll-down-command)) t)
+                 ((eq answer 'scroll-other-window)
+                  (ignore-errors (scroll-other-window)) t)
+                 ((eq answer 'scroll-other-window-down)
+                  (ignore-errors (scroll-other-window-down)) t)
+                 (t tchar)))
+          (when (eq tchar t)
+            (setq wrong-char nil
+                  tchar nil))
+          ;; The user has entered an invalid choice, so display the
+          ;; help messages.
+          (when (and (not (eq tchar nil))
+                     (not (assq tchar choices)))
+            (setq wrong-char (not (memq tchar '(?? ?\C-h)))
+                  tchar nil)
+            (when wrong-char
+              (ding))
+            (with-help-window (setq buf (get-buffer-create
+                                         "*Multiple Choice Help*"))
+              (with-current-buffer buf
+                (erase-buffer)
+                (pop-to-buffer buf)
+                (insert prompt "\n\n")
+                (let* ((columns (/ (window-width) 25))
+                       (fill-column 21)
+                       (times 0)
+                       (start (point)))
+                  (dolist (elem choices)
+                    (goto-char start)
+                    (unless (zerop times)
+                      (if (zerop (mod times columns))
+                          ;; Go to the next "line".
+                          (goto-char (setq start (point-max)))
+                        ;; Add padding.
+                        (while (not (eobp))
                           (end-of-line)
-                          (if (bolp)
-                              (insert line "\n")
-                            (insert line))
-                          (forward-line 1)))))))))))
-      (when (buffer-live-p buf)
-        (kill-buffer buf))
-      (assq tchar choices))))
+                          (insert (make-string (max (- (* (mod times columns)
+                                                          (+ fill-column 4))
+                                                       (current-column))
+                                                    0)
+                                               ?\s))
+                          (forward-line 1))))
+                    (setq times (1+ times))
+                    (let ((text
+                           (with-temp-buffer
+                             (insert (format
+                                      "%c: %s\n"
+                                      (car elem)
+                                      (cdr (assq (car elem) altered-names))))
+                             (fill-region (point-min) (point-max))
+                             (when (nth 2 elem)
+                               (let ((start (point)))
+                                 (insert (nth 2 elem))
+                                 (unless (bolp)
+                                   (insert "\n"))
+                                 (fill-region start (point-max))))
+                             (buffer-string))))
+                      (goto-char start)
+                      (dolist (line (split-string text "\n"))
+                        (end-of-line)
+                        (if (bolp)
+                            (insert line "\n")
+                          (insert line))
+                        (forward-line 1)))))))))))
+    (when (buffer-live-p buf)
+      (kill-buffer buf))
+    (assq tchar choices)))
+
+;; When available however, use the default `read-multiple-choice'.
+(require 'rmc nil t)
+(when (fboundp 'read-multiple-choice)
+  (defalias 'virtual-auto-fill--read-multiple-choice #'read-multiple-choice))
 
 (defvar virtual-auto-fill--saved-mode-enabled-states nil
   "Saves enabled states of local minor modes.
@@ -248,7 +251,7 @@ Confirmation is always skipped if
 `virtual-auto-fill-fill-paragraph-require-confirmation' is nil."
   (interactive)
   (when (not (when virtual-auto-fill-fill-paragraph-require-confirmation
-               (pcase (car (read-multiple-choice
+               (pcase (car (virtual-auto-fill--read-multiple-choice
                             "Really fill paragraphs in visually wrapped buffer?"
                             '((?y "yes" "Fill the paragraph, do not ask again")
                               (?n "no" "Don't fill the paragraph and ask again next time")
@@ -290,7 +293,7 @@ see
         (if (and (version< emacs-version "26.1")
                  (not virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1))
             (when virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1
-              (message "You are running an Emacs version < 26.1 which has a bug that can crash Emacs when visual-fill-column-mode is enabled (a mode employed by virtual-auto-fill-mode). This bug has been fixed starting with Emacs version 26.1. visual-fill-column-mode is left disabled for now. To enable it anyway, add (setq virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1 t) to your .emacs.d/init.el and retry. To disable this warning (but leave virtual-auto-fill-mode disabled), add (setq virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1 t). For further information, see https://github.com/joostkremers/visual-fill-column/issues/1"))
+              (message "You are running an Emacs version < 26.1 which has a bug that can crash Emacs when Visual Fill Column mode is enabled (a mode employed by Virtual Auto Fill mode). This bug has been fixed starting with Emacs version 26.1. Visual Fill Column mode is left disabled for now. To enable it anyway, set `virtual-auto-fill-mode-visual-fill-column-mode-in-emacs-pre-26-1' to t and retry. To disable this warning (but leave Virtual Auto Fill mode disabled), add set `virtual-auto-fill-mode-visual-fill-column-mode-warning-in-emacs-pre-26-1'. For further information, see https://github.com/joostkremers/visual-fill-column/issues/1"))
           (visual-fill-column-mode 1))
         (local-set-key [remap fill-paragraph]
                        #'virtual-auto-fill-fill-paragraph-after-confirmation)
