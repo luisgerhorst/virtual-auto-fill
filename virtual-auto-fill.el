@@ -272,8 +272,8 @@ Virtual Auto Fill mode).  For further information, see:
 
 By setting this to non-nil, you risk a crash when your Emacs
 version is too old.  To only disable the warning about the bug,
-set
-`virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1'.")
+unset
+`virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1'.")
 
 (defvar virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1 nil
   "Don't warn about the Emacs bug triggered by Visual Fill Column mode.
