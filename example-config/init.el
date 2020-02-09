@@ -1,6 +1,8 @@
-;; Required: Install straight.el, copied from https://github.com/raxod502/straight.el#getting-started
+;;; Required
+
+;; Install straight.el, copied from https://github.com/raxod502/straight.el#getting-started
 ;;
-;; This is required but your only need it once in your whole config. AOT Virtual
+;; This is required but you only need it once in your whole config. AOT Virtual
 ;; Auto Fill mode is not yet available via MELPA (i.e. package.el).
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -15,21 +17,24 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; Required: Install Virtual Auto Fill mode using straight.el
+;; Install Virtual Auto Fill mode using straight.el
 (straight-use-package
  '(virtual-auto-fill
    :type git
    :host github
    :repo "luisgerhorst/virtual-auto-fill"))
 
-;; Optional: Enable Virtual Auto Fill mode in all markdown files. To do this we
-;; first install `markdown-mode':
+
+;;; Optional
+
+;; Enable Virtual Auto Fill mode in every Markdown file. To do this we first
+;; install `markdown-mode',
 (straight-use-package 'markdown-mode)
 ;; ... then wait until Markdown mode is autoloaded by straight.el (usually
-;; happend the first time we open a markdown file) which makes the variable
+;; happens the first time we open a Markdown file). This makes the variable
 ;; `markdown-mode-hook' available:
 (with-eval-after-load 'markdown-mode
-  ;; .. and finally set up the automatic activation of Virtual Auto Fill mode
-  ;; when we enable Markdown mode. Calling `virtual-auto-fill-mode' the first
-  ;; time will autoload the mode.
+  ;; Finally set up the automatic activation of Virtual Auto Fill mode when we
+  ;; enable Markdown mode. The mode will be loaded the first time a Markdown
+  ;; file is opened thereby keeping your Emacs startup slick.
   (add-hook 'markdown-mode-hook #'virtual-auto-fill-mode))
