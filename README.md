@@ -36,17 +36,18 @@ For a complete example configuration see [`example-config/init.el`](./example-co
 
 ## Activation
 
-To enable `virtual-auto-fill-mode` automatically in markdown files, add the following after loading `markdown-mode`:
+To enable Virtual Auto Fill mode automatically in Markdown files, add the following after installing `markdown-mode`:
 
 ``` emacs-lisp
-(add-hook 'markdown-mode-hook #'virtual-auto-fill-mode)
+(with-eval-after-load 'markdown-mode
+  (add-hook 'markdown-mode-hook #'virtual-auto-fill-mode))
 ```
 
 ## Testing
 
-The following serves as documentation for contributors to easy development. If you just want to use this package as an end user this should not concern you.
+The following serves as documentation for contributors to easy development. If you just want to use this package as a end user this should not concern you.
 
-Load the example configuration into a vanilla instance of emacs, this will install straight.el to `./example-config/straight`:
+Load the example configuration into a vanilla instance of Emacs, this will install straight.el to `./example-config/straight`:
 
 ``` shell
 make test
