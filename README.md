@@ -23,7 +23,7 @@ Without `virtual-auto-fill-mode`, only a small portion of the text file is visib
 Add the following to your `.emacs.d/init.el`:
 
 ``` emacs-lisp
-(use-package-straight
+(straight-use-package
  '(virtual-auto-fill
    :type git
    :host github
