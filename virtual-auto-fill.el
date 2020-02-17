@@ -8,7 +8,7 @@
 ;; Keywords: convenience, mail, outlines, files, wp
 ;; Created: Sun 26. Jan 2020
 ;; Version: 0.1
-;; Package-Requires: ((emacs "25.2") (adaptive-wrap "0.7") (visual-fill-column "1.9") (diminish "0.45"))
+;; Package-Requires: ((emacs "25.2") (adaptive-wrap "0.7") (visual-fill-column "1.9"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -40,7 +40,6 @@
 
 (require 'adaptive-wrap)
 (require 'visual-fill-column)
-(require 'diminish)
 
 ;; To support Emacs versions < 26.1, which added `read-multiple-choice', we
 ;; include a copy of the function from rmc.el here.
@@ -305,7 +304,6 @@ mode even when your Emacs is deemed buggy, set
       (progn
         (virtual-auto-fill--save-state)
         (visual-line-mode 1)
-        (diminish 'visual-line-mode)
         (adaptive-wrap-prefix-mode 1)
         (if (and (version< emacs-version "26.1")
                  (not virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1))
@@ -317,7 +315,6 @@ mode even when your Emacs is deemed buggy, set
         (local-set-key [remap mu4e-fill-paragraph]
                        #'virtual-auto-fill-fill-paragraph-after-confirmation))
     (virtual-auto-fill--restore-state)
-    (diminish-undo 'visual-line-mode)
     (local-set-key [remap fill-paragraph] nil)
     (local-set-key [remap mu4e-fill-paragraph] nil)
     (kill-local-variable 'virtual-auto-fill-fill-paragraph-require-confirmation)))
