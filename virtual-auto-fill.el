@@ -250,17 +250,17 @@ define-minor-mode's default.")
 Confirmation is always skipped if
 `virtual-auto-fill-fill-paragraph-require-confirmation' is nil."
   (interactive)
-  (when (not (when virtual-auto-fill-fill-paragraph-require-confirmation
-               (pcase (car (virtual-auto-fill--read-multiple-choice
-                            "Really fill paragraphs in visually wrapped buffer?"
-                            '((?y "yes" "Fill the paragraph, do not ask again")
-                              (?n "no" "Don't fill the paragraph and ask again next time")
-                              (?d "disable visual wrapping" "Disable virtual-auto-fill-mode"))))
-                 (?y (progn (setq-local virtual-auto-fill-fill-paragraph-require-confirmation nil)
-                            (call-interactively #'fill-paragraph)))
-                 (?n nil)
-                 (?d (progn (virtual-auto-fill-mode -1)
-                            (call-interactively #'fill-paragraph))))))))
+  (unless (when virtual-auto-fill-fill-paragraph-require-confirmation
+            (pcase (car (virtual-auto-fill--read-multiple-choice
+                         "Really fill paragraphs in visually wrapped buffer?"
+                         '((?y "yes" "Fill the paragraph, do not ask again")
+                           (?n "no" "Don't fill the paragraph and ask again next time")
+                           (?d "disable visual wrapping" "Disable virtual-auto-fill-mode"))))
+              (?y (progn (setq-local virtual-auto-fill-fill-paragraph-require-confirmation nil)
+                         (call-interactively #'fill-paragraph)))
+              (?n nil)
+              (?d (progn (virtual-auto-fill-mode -1)
+                         (call-interactively #'fill-paragraph)))))))
 
 (defvar virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1 nil
   "Enable Visual Fill Column mode even if Emacs is too old.
