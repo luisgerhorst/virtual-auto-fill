@@ -275,7 +275,7 @@ version is too old.  To only disable the warning about the bug,
 unset
 `virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1'.")
 
-(put 'virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1
+(put 'virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1
      'risky-local-variable t)
 
 (defvar virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1 nil
@@ -291,6 +291,9 @@ running an Emacs version smaller than 26.1, but still leaves
 Visual Fill Column mode disabled.  To enable Visual Fill Column
 mode even when your Emacs is deemed buggy, set
 `virtual-auto-fill-visual-fill-column-in-emacs-pre-26-1'.")
+
+(put 'virtual-auto-fill-visual-fill-column-warning-in-emacs-pre-26-1
+     'risky-local-variable t)
 
 ;;;###autoload
 (define-minor-mode virtual-auto-fill-mode
