@@ -22,7 +22,7 @@ Without `virtual-auto-fill-mode`, only a small portion of the text file is visib
 
 After installation, the command `virtual-auto-fill-mode` which enables the mode is autoloaded, you can call it without any additional configuration!
 
-### Using [straight.el](https://github.com/raxod502/straight.el)
+### [straight.el](https://github.com/raxod502/straight.el)
 
 Add the following to your `.emacs.d/init.el`:
 
@@ -36,7 +36,7 @@ Add the following to your `.emacs.d/init.el`:
 
 For a complete example configuration see [`example-configs/straight/init.el`](./example-configs/straight/init.el). You can omit the parts already included in your `init.el`.
 
-### Using MELPA
+### MELPA
 
 After [adding MELPA to your `package-archives`](https://melpa.org/#/getting-started), run `M-x package-install virtual-auto-fill` once.
 
