@@ -61,4 +61,4 @@ Load the example configuration into a vanilla instance of Emacs, this will insta
 make CONFIG=straight test
 ```
 
-Run with `CONFIG=melpa` to test the melpa configuration. Refer to the `Makefile` for additional commands that may be useful.
+Run with `CONFIG=melpa` to test the MELPA configuration. Refer to the `Makefile` for additional commands that may be useful.
