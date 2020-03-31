@@ -20,6 +20,8 @@ Without `virtual-auto-fill-mode`, only a small portion of the text file is visib
 
 ## Installation
 
+After installation, the command `virtual-auto-fill-mode` which enables the mode is autoloaded, you can call it without any additional configuration!
+
 ### Using [straight.el](https://github.com/raxod502/straight.el)
 
 Add the following to your `.emacs.d/init.el`:
@@ -32,11 +34,17 @@ Add the following to your `.emacs.d/init.el`:
    :repo "luisgerhorst/virtual-auto-fill"))
 ```
 
-For a complete example configuration see [`example-config/init.el`](./example-config/init.el). You can omit the parts already included in your `init.el`.
+For a complete example configuration see [`example-configs/straight/init.el`](./example-configs/straight/init.el). You can omit the parts already included in your `init.el`.
+
+### Using MELPA
+
+After [adding MELPA to your `package-archives`](https://melpa.org/#/getting-started), run `M-x package-install virtual-auto-fill` once.
+
+See [`example-configs/melpa/init.el`](./example-configs/melpa/init.el) for a complete config (copying not recommened thought).
 
 ## Activation
 
-To enable Virtual Auto Fill mode automatically in Markdown files, add the following after installing `markdown-mode`:
+To enable Virtual Auto Fill mode automatically in Markdown files, add the following after also installing `markdown-mode`:
 
 ``` emacs-lisp
 (with-eval-after-load 'markdown-mode
@@ -50,7 +58,7 @@ The following serves as documentation for contributors to easy development. If y
 Load the example configuration into a vanilla instance of Emacs, this will install straight.el to `./example-config/straight`:
 
 ``` shell
-make test
+make CONFIG=straight test
 ```
 
-Refer to the `Makefile` for additional commands that may be useful.
+Run with `CONFIG=melpa` to test the melpa configuration. Refer to the `Makefile` for additional commands that may be useful.

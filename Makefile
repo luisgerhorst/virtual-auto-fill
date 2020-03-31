@@ -3,6 +3,9 @@
 # from makefiles.
 EMACS = emacs
 
+CONFIG = straight # alt. melpa
+EMACSD = example-configs/$(CONFIG)
+
 .PHONY: all
 all:
 	cask build
@@ -10,11 +13,11 @@ all:
 .PHONY: clean
 clean:
 	cask clean-elc
-	rm -rfd ./example-config/straight
+	rm -rfd ./example-configs/straight/straight ./example-configs/melpa/elpa
 
 .PHONY: test
 test:
 	$(EMACS) -nw --debug-init -Q \
-		--eval '(setq user-emacs-directory "./example-config/")' \
-		--load example-config/init.el \
+		--eval '(setq user-emacs-directory "./$(EMACSD)/")' \
+		--load $(EMACSD)/init.el \
 		--visit README.md

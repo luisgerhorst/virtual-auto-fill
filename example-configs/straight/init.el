@@ -1,4 +1,4 @@
-;;; Required
+;;; Required:
 
 ;; Install straight.el, copied from https://github.com/raxod502/straight.el#getting-started
 ;;
@@ -25,7 +25,7 @@
    :repo "luisgerhorst/virtual-auto-fill"))
 
 
-;;; Optional
+;;; Optional:
 
 ;; Enable Virtual Auto Fill mode in every Markdown file. To do this we first
 ;; install `markdown-mode',

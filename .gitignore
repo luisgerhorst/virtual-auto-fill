@@ -9,4 +9,5 @@
 
 # Undo-tree save-files
 *.~undo-tree
-/example-config/straight/
+/example-configs/straight/straight/
+/example-configs/melpa/elpa/
