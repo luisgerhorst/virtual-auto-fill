@@ -24,7 +24,7 @@ After installation, the command `virtual-auto-fill-mode` which enables the mode 
 
 ### [straight.el](https://github.com/raxod502/straight.el)
 
-Add the following to your `.emacs.d/init.el`:
+Having [set up straight.el](https://github.com/raxod502/straight.el#getting-started), add the following to your `.emacs.d/init.el`, then restart your Emacs:
 
 ``` emacs-lisp
 (straight-use-package
