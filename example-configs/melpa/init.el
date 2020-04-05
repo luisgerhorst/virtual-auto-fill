@@ -1,5 +1,14 @@
 ;;; Required:
 
+;; If I test this config on Debian 10 with Emacs 26.1 I get a "Bad Request"
+;; error when accessing GNU ELPA.
+;;
+;; The following fixes this problem (via
+;; https://github.com/syl20bnr/spacemacs/issues/12535, likely related to
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341). If you don't have this
+;; problem don't copy it!
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; Set up MELPA. Code copied from https://melpa.org/#/getting-started
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
