@@ -315,6 +315,8 @@ mode even when your Emacs is deemed buggy, set
         (local-set-key [remap mu4e-fill-paragraph]
                        #'virtual-auto-fill-fill-paragraph-after-confirmation))
     (virtual-auto-fill--restore-state)
+    ;; TODO: Not sure whether we ideally would also have to save/restore these
+    ;; keybindings.
     (local-set-key [remap fill-paragraph] nil)
     (local-set-key [remap mu4e-fill-paragraph] nil)
     (kill-local-variable 'virtual-auto-fill-fill-paragraph-require-confirmation)))
