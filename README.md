@@ -38,7 +38,7 @@ For a complete example configuration see [`example-configs/straight/init.el`](./
 
 ### MELPA
 
-After [adding MELPA to your `package-archives`](https://melpa.org/#/getting-started), run `M-x package-install virtual-auto-fill` once.
+After [adding MELPA to your `package-archives`](https://melpa.org/#/getting-started), run [`M-x package-install virtual-auto-fill`](https://www.gnu.org/software/emacs/manual/html_node/efaq/Basic-keys.html) once.
 
 See [`example-configs/melpa/init.el`](./example-configs/melpa/init.el) for a complete config (copying not recommened thought).
 
